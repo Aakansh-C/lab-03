@@ -20,7 +20,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements AddCityFragment.AddCityDialogListener {
+public class MainActivity extends AppCompatActivity implements
+            AddCityFragment.AddCityDialogListener,
+                EditCityFragment.EditCityDialogListener {
 
     private ArrayList<City> dataList;
     private ListView cityList;
@@ -30,6 +32,17 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.A
     public void addCity(City city) {
         cityAdapter.add(city);
         cityAdapter.notifyDataSetChanged();
+    }
+
+    // Same logic as addCity
+    // Position is read from our Click listener, which is when relayed here to a method call, with it as a parameter
+    @Override
+    public void editCity(int position, City updatedCity) {
+        if (position >= 0 && position < dataList.size()) {
+            dataList.set(position, updatedCity);
+            cityAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "City updated", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -53,57 +66,11 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.A
         fab.setOnClickListener(v -> {
             new AddCityFragment().show(getSupportFragmentManager(), "Add City");
         });
-        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Selecting clicked city
-                final City clickedCity = dataList.get(position);
 
-
-                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                View dialogView = inflater.inflate(R.layout.fragment_edit_city, null);
-
-                // Get EditTexts from inflated view
-                final EditText etCity = dialogView.findViewById(R.id.edit_city);
-                final EditText etProvince = dialogView.findViewById(R.id.edit_province);
-
-                // Prefill with the selected city's values
-                etCity.setText(clickedCity.getName());
-                etProvince.setText(clickedCity.getProvince());
-
-                // Build dialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Edit City");
-                builder.setView(dialogView);
-
-                // Save button
-                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String newName = etCity.getText().toString().trim();
-                        String newProvince = etProvince.getText().toString().trim();
-
-                        if (newName.isEmpty()) {
-                            Toast.makeText(MainActivity.this, "City name cannot be empty", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // Update the city object and tell adapter theres an update
-                        clickedCity.setName(newName);
-                        clickedCity.setProvince(newProvince);
-                        cityAdapter.notifyDataSetChanged();
-
-                        Toast.makeText(MainActivity.this, "City updated", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                // Cancel button
-                builder.setNegativeButton("Cancel", null);
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-            }
+        cityList.setOnItemClickListener((parent, view, position, id) -> {
+            City clickedCity = dataList.get(position);
+            EditCityFragment editFragment = EditCityFragment.newInstance(position, clickedCity);
+            editFragment.show(getSupportFragmentManager(), "EditCity");
         });
     }
 }

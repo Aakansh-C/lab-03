@@ -10,7 +10,7 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Enter City"
-        android:text="Alberta"/>  <!-- Need to dynamically code so it puts the selected city -->
+        android:text="Alberta"/>
     <EditText
         android:id="@+id/edit_province"
         android:layout_width="match_parent"
@@ -18,5 +18,5 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Enter Province"
-        android:text="AB"/> <!-- Need to dynamically code so it puts the selected Province -->
+        android:text="AB"/>
 </LinearLayout>
