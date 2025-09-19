@@ -14,16 +14,16 @@ import androidx.fragment.app.DialogFragment;
 
 import kotlin.internal.InlineOnly;
 
-public class AddCityFragment extends DialogFragment {
-    interface AddCityDialogListener {
-        void addCity(City city);
+public class EditCityFragment extends DialogFragment {
+    interface EditCityDialogListener {
+        void editCity(City city);
     }
-    private AddCityDialogListener listener;
+    private EditCityDialogListener listener;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof AddCityDialogListener) {
-            listener = (AddCityDialogListener) context;
+        if (context instanceof EditCityDialogListener) {
+            listener = (EditCityDialogListener) context;
         } else {
             throw new RuntimeException(context + " must implement AddCityDialogListener");
         }
@@ -37,12 +37,12 @@ public class AddCityFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setView(view)
-                .setTitle("Add a city")
+                .setTitle("Edit City and Province")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Add", (dialog, which) -> {
                     String cityName = editCityName.getText().toString();
                     String provinceName = editProvinceName.getText().toString();
-                    listener.addCity(new City(cityName, provinceName));
+                    listener.editCity(new City(cityName, provinceName));
                 })
                 .create();
     }
